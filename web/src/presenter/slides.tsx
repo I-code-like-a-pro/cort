@@ -1,6 +1,5 @@
 import type { ComponentType } from "react";
 import {
-  ArrowIcon,
   BoltIcon,
   ChatIcon,
   CodeIcon,
@@ -93,34 +92,89 @@ function ProblemAgents() {
 
 function ProblemIntrusion() {
   return (
-    <Frame tone="light" n={3} eyebrow="The same weakness, another way in" title="A taken-over company system can send money anywhere">
-      <div className="row flow">
-        <Card title="Attacker gets in">
-          Remote management tools are real IT software. Attackers abuse them to take over a machine.
-        </Card>
-        <span className="arrow"><ArrowIcon /></span>
-        <Card title="Reaches a payer">
-          The machine or account can approve payments, so now the attacker can too.
-        </Card>
-        <span className="arrow"><ArrowIcon /></span>
-        <Card title="Funds leave">Money goes to an address the attacker controls, often in crypto.</Card>
-      </div>
-      <p className="note" style={{ fontSize: 24, lineHeight: 1.35, width: 1664 }}>
-        Huntress saw RMM-tool abuse (AnyDesk, ScreenConnect and similar) in about <b>1 in 4</b> incidents its
-        analysts investigated in 2025, up from 1 in 14 in 2024 — a 277% jump, because the traffic looks like normal
-        IT work. CISA, NSA and MS-ISAC have separately warned that criminals abuse these same tools to reach
-        victims’ accounts.{" "}
-        <span style={{ fontSize: 18, color: "#8a96aa" }}>
-          Sources: Huntress 2026 Cyber Threat Report · CISA/NSA/MS-ISAC Advisory AA23-025A (Jan 2023).
-        </span>
-      </p>
-      <div className="mock">
-        <p className="mock-label">Illustrative example · not an actual case</p>
-        <div className="mock-chat">
-          <p className="mock-msg">“Admin”: Access confirmed. Send me the account details.</p>
-          <p className="mock-msg short">“Admin”: Split is 40% once it clears.</p>
+    <Frame tone="light" n={3} eyebrow="The same weakness, another way in" title="Real IT tools, abused to reach whoever can pay">
+      <div className="row" style={{ alignItems: "stretch" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16 }}>
+          <Card title="1 · Attacker gets in">
+            Remote management tools (AnyDesk, ScreenConnect, TeamViewer) are real IT software. Attackers abuse them
+            to take over a machine.
+          </Card>
+          <Card title="2 · Reaches a payer">
+            The machine or account can approve payments, so now the attacker can too.
+          </Card>
+          <Card title="3 · Funds leave">
+            Money goes to an address the attacker controls, often in crypto, before anyone notices.
+          </Card>
+        </div>
+        <div className="card">
+          <svg
+            aria-label="Bar chart: the share of incidents involving abuse of remote monitoring and management tools rose from about 1 in 14 in 2024 to about 1 in 4 in 2025, a 277 percent increase"
+            viewBox="0 0 700 380"
+            style={{ width: "100%", height: 300 }}
+          >
+            <rect x={0} y={0} width={700} height={380} fill="#FFFFFF" />
+            <text x={350} y={26} fontFamily="Inter, Arial, sans-serif" fontSize={22} fontWeight={600} fill="#0E1726" textAnchor="middle">
+              Incidents involving RMM-tool abuse
+            </text>
+            <line x1={70} y1={330} x2={660} y2={330} stroke="#DCE2EC" strokeWidth={2} />
+            <line x1={70} y1={50} x2={70} y2={330} stroke="#DCE2EC" strokeWidth={2} />
+            <rect x={190} y={266} width={140} height={64} fill="#9FB0CC" rx={6} />
+            <rect x={470} y={90} width={140} height={240} fill="#2354E6" rx={6} />
+            <text x={260} y={250} fontFamily="Inter, Arial, sans-serif" fontSize={26} fontWeight={700} fill="#4A5A73" textAnchor="middle">
+              ~7%
+            </text>
+            <text x={540} y={74} fontFamily="Inter, Arial, sans-serif" fontSize={26} fontWeight={700} fill="#2354E6" textAnchor="middle">
+              ~25%
+            </text>
+            <text x={260} y={360} fontFamily="Inter, Arial, sans-serif" fontSize={22} fill="#4A5A73" textAnchor="middle">
+              2024 · 1 in 14
+            </text>
+            <text x={540} y={360} fontFamily="Inter, Arial, sans-serif" fontSize={22} fontWeight={600} fill="#0E1726" textAnchor="middle">
+              2025 · 1 in 4
+            </text>
+            <path d="M330 140 L470 140" stroke="#2354E6" strokeWidth={2} strokeDasharray="4 4" />
+            <text x={400} y={128} fontFamily="Inter, Arial, sans-serif" fontSize={22} fontWeight={700} fill="#2354E6" textAnchor="middle">
+              +277%
+            </text>
+          </svg>
+          <p style={{ fontSize: 19, lineHeight: 1.35 }}>
+            Source: Huntress 2026 Cyber Threat Report (analyst-investigated incidents). CISA/NSA/MS-ISAC Advisory
+            AA23-025A documents the same abuse of legitimate RMM software.
+          </p>
         </div>
       </div>
+      <h3 style={{ margin: 0, fontFamily: "Space Grotesk, Arial, sans-serif", fontSize: 26, fontWeight: 600 }}>
+        Documented in the wild
+      </h3>
+      <div className="row">
+        <div className="card small">
+          <h3 style={{ color: "#2354E6" }}>MGM &amp; Caesars · Sept 2023</h3>
+          <p>
+            Scattered Spider reached both networks via help-desk social engineering, then used remote-access tools
+            (CISA cites AnyDesk, TeamViewer) to persist. MGM reported ~$100M in losses; Caesars reportedly paid a
+            ~$15M ransom.
+          </p>
+        </div>
+        <div className="card small">
+          <h3 style={{ color: "#2354E6" }}>Medusa ransomware · Mar 2025</h3>
+          <p>
+            FBI/CISA/MS-ISAC advisory AA25-071A: Medusa affiliates used AnyDesk, Atera, SimpleHelp, Splashtop and
+            other RMM tools for remote access.
+          </p>
+        </div>
+        <div className="card small">
+          <h3 style={{ color: "#2354E6" }}>Interlock ransomware · Jul 2025</h3>
+          <p>
+            CISA/FBI/HHS/MS-ISAC advisory AA25-203A: Interlock actors used AnyDesk and ScreenConnect to obtain
+            remote access and persistence.
+          </p>
+        </div>
+      </div>
+      <p className="note" style={{ fontSize: 17, width: 1664 }}>
+        Sources: Huntress 2026 Cyber Threat Report · CISA/NSA/MS-ISAC AA23-025A · CISA/FBI AA23-320A (Scattered
+        Spider) · AA25-071A (Medusa) · AA25-203A (Interlock). Dollar figures above are widely reported, not
+        independently confirmed.
+      </p>
     </Frame>
   );
 }
