@@ -9,7 +9,10 @@ import { runAgent } from "./agent-core.js";
 import { getWalletBalanceXlm } from "./chain.js";
 import type { ChatMessage, RunAgentResult } from "./types.js";
 
-const HOST = "127.0.0.1";
+// Listens on 127.0.0.1 by default (local-only). A host like Render needs the
+// server to listen on 0.0.0.0 so its load balancer can actually reach it;
+// set HOST=0.0.0.0 there. Local dev is unaffected since nothing sets HOST.
+const HOST = process.env.HOST || "127.0.0.1";
 const PORT = Number(process.env.PORT) || 3000;
 
 // The only websites allowed to call this API. Override with FRONTEND_ORIGIN in .env
