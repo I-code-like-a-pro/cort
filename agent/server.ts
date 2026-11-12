@@ -21,7 +21,13 @@ const ALLOWED_ORIGINS = new Set(
     .filter(Boolean)
 );
 // Only answer requests addressed to this machine by name; blocks DNS rebinding.
-const ALLOWED_HOSTS = new Set([`${HOST}:${PORT}`, `localhost:${PORT}`]);
+// EXTRA_HOSTS (comma-separated, e.g. a tunnel hostname like abcd.ngrok-free.app)
+// lets a demo tunnel reach this server without weakening the check for anyone else.
+const ALLOWED_HOSTS = new Set([
+  `${HOST}:${PORT}`,
+  `localhost:${PORT}`,
+  ...(process.env.EXTRA_HOSTS || "").split(",").map((s) => s.trim()).filter(Boolean),
+]);
 
 const MAX_BODY_BYTES = 20_000;
 const MAX_MESSAGES = 20;

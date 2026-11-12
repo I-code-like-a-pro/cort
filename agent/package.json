@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch --env-file=.env --import tsx server.ts",
     "start": "node --env-file=.env --import tsx server.ts",
+    "start:prod": "node --import tsx server.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
@@ -15,11 +16,11 @@
   "license": "ISC",
   "dependencies": {
     "@stellar/stellar-sdk": "^17.4.0",
-    "groq-sdk": "^1.6.0"
+    "groq-sdk": "^1.6.0",
+    "tsx": "^4.23.15"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }
 }
