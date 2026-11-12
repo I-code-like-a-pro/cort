@@ -1,4 +1,4 @@
-import { CheckIcon } from "./Icons.jsx";
+import { CheckIcon } from "./Icons.js";
 
 // Plain text describing how the wallet contract is configured.
 // If you change the cap with set_limit, update the second line.

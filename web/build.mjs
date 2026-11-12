@@ -16,8 +16,8 @@ const watch = process.argv.includes("--watch");
 
 const options = {
   entryPoints: {
-    app: "src/main.jsx",
-    presenter: "src/presenter/main.jsx",
+    app: "src/main.tsx",
+    presenter: "src/presenter/main.tsx",
   },
   bundle: true,
   minify: !watch,

@@ -1,6 +1,12 @@
 import { fmt, timeOf } from "../format.js";
+import type { PayVendorEvent } from "../api.js";
 
-export default function ActivityCard({ entries }) {
+export interface ActivityEntry extends PayVendorEvent {
+  key: string;
+  time: Date;
+}
+
+export default function ActivityCard({ entries }: { entries: ActivityEntry[] }) {
   return (
     <section className="card panel">
       <div className="activity-head">

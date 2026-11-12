@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
-import TxnCard from "./TxnCard.jsx";
+import { useEffect, useRef, type ReactNode } from "react";
+import TxnCard from "./TxnCard.js";
+import type { ConversationItem } from "../hooks/useChat.js";
 
 const PROMPTS = [
   {
@@ -16,7 +17,7 @@ const PROMPTS = [
   },
 ];
 
-function EmptyState({ onPick }) {
+function EmptyState({ onPick }: { onPick: (text: string) => void }) {
   return (
     <section className="empty">
       <h3>Pay a vendor</h3>
@@ -33,7 +34,7 @@ function EmptyState({ onPick }) {
   );
 }
 
-function AgentRow({ children }) {
+function AgentRow({ children }: { children: ReactNode }) {
   return (
     <div className="row agent">
       <div className="avatar" aria-hidden="true">A</div>
@@ -42,7 +43,7 @@ function AgentRow({ children }) {
   );
 }
 
-function Message({ item, onRetry }) {
+function Message({ item, onRetry }: { item: ConversationItem; onRetry: () => void }) {
   if (item.kind === "user") {
     return (
       <div className="row user">
@@ -75,8 +76,15 @@ function Message({ item, onRetry }) {
   );
 }
 
-export default function MessageList({ items, pending, onRetry, onPick }) {
-  const ref = useRef(null);
+interface MessageListProps {
+  items: ConversationItem[];
+  pending: boolean;
+  onRetry: () => void;
+  onPick: (text: string) => boolean;
+}
+
+export default function MessageList({ items, pending, onRetry, onPick }: MessageListProps) {
+  const ref = useRef<HTMLDivElement>(null);
 
   // Keep the newest message in view.
   useEffect(() => {

@@ -1,13 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowUpIcon } from "./Icons.jsx";
+import { ArrowUpIcon } from "./Icons.js";
 
-export default function Composer({ disabled, onSend }) {
+interface ComposerProps {
+  disabled: boolean;
+  onSend: (text: string) => boolean;
+}
+
+export default function Composer({ disabled, onSend }: ComposerProps) {
   const [value, setValue] = useState("");
-  const ref = useRef(null);
+  const ref = useRef<HTMLTextAreaElement>(null);
 
   // Grow the box with its content, up to a limit.
   useLayoutEffect(() => {
     const el = ref.current;
+    if (!el) return;
     el.style.height = "auto";
     el.style.height = Math.min(el.scrollHeight, 140) + "px";
   }, [value]);

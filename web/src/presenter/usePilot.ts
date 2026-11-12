@@ -2,15 +2,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 // The slide pilot's brain. It knows which slide is showing, how long each slide
 // should stay up, and which slides wait for you (like the live demo).
-//
-// mode:  "idle" | "playing" | "paused" | "rehearsing"
-// plan:  { durations: seconds per slide, holds: true = wait for you to press next }
+
+export type PilotMode = "idle" | "playing" | "paused" | "rehearsing";
+
+export interface Plan {
+  durations: number[]; // seconds per slide
+  holds: boolean[]; // true = wait for you to press next, instead of auto-advancing
+}
 
 const STORAGE_KEY = "cort.pilot.plan.v1";
 
-function loadPlan(defaults) {
+function loadPlan(defaults: Plan): Plan {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
     const n = defaults.durations.length;
     if (
       saved &&
@@ -18,7 +22,7 @@ function loadPlan(defaults) {
       Array.isArray(saved.holds) &&
       saved.durations.length === n &&
       saved.holds.length === n &&
-      saved.durations.every((d) => Number.isFinite(d) && d > 0)
+      saved.durations.every((d: unknown) => typeof d === "number" && Number.isFinite(d) && d > 0)
     ) {
       return { durations: saved.durations, holds: saved.holds.map(Boolean) };
     }
@@ -28,7 +32,7 @@ function loadPlan(defaults) {
   return defaults;
 }
 
-function savePlan(plan) {
+function savePlan(plan: Plan): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
   } catch {
@@ -36,20 +40,20 @@ function savePlan(plan) {
   }
 }
 
-export function plannedSeconds(plan) {
+export function plannedSeconds(plan: Plan): number {
   return plan.durations.reduce((sum, d, i) => sum + (plan.holds[i] ? 0 : d), 0);
 }
 
-export function usePilot(count, defaults) {
-  const [plan, setPlan] = useState(() => loadPlan(defaults));
+export function usePilot(count: number, defaults: Plan) {
+  const [plan, setPlan] = useState<Plan>(() => loadPlan(defaults));
   const [index, setIndex] = useState(0);
-  const [mode, setMode] = useState("idle");
+  const [mode, setMode] = useState<PilotMode>("idle");
   const [elapsed, setElapsed] = useState(0); // ms on the current slide
   const [clock, setClock] = useState(0); // ms since the run started
-  const [result, setResult] = useState(null); // summary after a rehearsal
-  const marks = useRef([]); // ms spent per slide during a rehearsal
+  const [result, setResult] = useState<{ total: number } | null>(null); // summary after a rehearsal
+  const marks = useRef<(number | undefined)[]>([]); // ms spent per slide during a rehearsal
 
-  const updatePlan = useCallback((next) => {
+  const updatePlan = useCallback((next: Plan) => {
     setPlan(next);
     savePlan(next);
   }, []);
@@ -69,7 +73,7 @@ export function usePilot(count, defaults) {
   }, [mode]);
 
   const goTo = useCallback(
-    (i) => {
+    (i: number) => {
       setIndex(Math.max(0, Math.min(count - 1, i)));
       setElapsed(0);
     },
@@ -87,7 +91,7 @@ export function usePilot(count, defaults) {
   const finishRehearsal = useCallback(() => {
     marks.current[index] = elapsed;
     const durations = plan.durations.map((old, i) =>
-      marks.current[i] != null ? Math.max(3, Math.round(marks.current[i] / 1000)) : old
+      marks.current[i] != null ? Math.max(3, Math.round(marks.current[i]! / 1000)) : old
     );
     const next = { ...plan, durations };
     updatePlan(next);
@@ -161,3 +165,5 @@ export function usePilot(count, defaults) {
     finishRehearsal,
   };
 }
+
+export type Pilot = ReturnType<typeof usePilot>;

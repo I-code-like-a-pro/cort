@@ -1,25 +1,41 @@
 import { useCallback, useRef, useState } from "react";
-import { sendChat } from "../api.js";
+import { sendChat, type ChatMessage, type PayVendorEvent } from "../api.js";
 
 // A conversation is a list of items:
-//   { id, kind: "user",  text }
-//   { id, kind: "agent", text, events, time }   events = payment attempts
-//   { id, kind: "error", text, detail }
+export interface UserItem {
+  id: number;
+  kind: "user";
+  text: string;
+}
+export interface AgentItem {
+  id: number;
+  kind: "agent";
+  text: string;
+  events: PayVendorEvent[];
+  time: Date;
+}
+export interface ErrorItem {
+  id: number;
+  kind: "error";
+  text: string;
+  detail?: string;
+}
+export type ConversationItem = UserItem | AgentItem | ErrorItem;
 
 let counter = 0;
 const nextId = () => ++counter;
 
-function toHistory(items) {
+function toHistory(items: ConversationItem[]): ChatMessage[] {
   return items
-    .filter((item) => item.kind === "user" || item.kind === "agent")
+    .filter((item): item is UserItem | AgentItem => item.kind === "user" || item.kind === "agent")
     .map((item) => ({
-      role: item.kind === "user" ? "user" : "assistant",
+      role: item.kind === "user" ? ("user" as const) : ("assistant" as const),
       content: item.text,
     }));
 }
 
-export function useChat({ onSettled } = {}) {
-  const [items, setItems] = useState([]);
+export function useChat({ onSettled }: { onSettled?: () => void } = {}) {
+  const [items, setItems] = useState<ConversationItem[]>([]);
   const [pending, setPending] = useState(false);
 
   // Refs hold the latest values so the callbacks below stay stable.
@@ -29,7 +45,7 @@ export function useChat({ onSettled } = {}) {
   settledRef.current = onSettled;
   const busyRef = useRef(false);
 
-  const run = useCallback(async (base) => {
+  const run = useCallback(async (base: ConversationItem[]) => {
     busyRef.current = true;
     setPending(true);
     try {
@@ -44,7 +60,7 @@ export function useChat({ onSettled } = {}) {
           time: new Date(),
         },
       ]);
-    } catch (err) {
+    } catch (err: any) {
       const unreachable = err instanceof TypeError; // fetch itself failed
       setItems([
         ...base,
@@ -66,10 +82,10 @@ export function useChat({ onSettled } = {}) {
 
   // Returns true if the message was accepted (so the composer can clear itself).
   const send = useCallback(
-    (text) => {
+    (text: string) => {
       const clean = text.trim();
       if (!clean || busyRef.current) return false;
-      const base = [
+      const base: ConversationItem[] = [
         ...itemsRef.current.filter((item) => item.kind !== "error"),
         { id: nextId(), kind: "user", text: clean },
       ];
@@ -93,3 +109,5 @@ export function useChat({ onSettled } = {}) {
 
   return { items, pending, send, retry, reset };
 }
+
+export type Chat = ReturnType<typeof useChat>;

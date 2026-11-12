@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import ActivityCard from "./components/ActivityCard.jsx";
-import BalanceCard from "./components/BalanceCard.jsx";
-import ChatPanel from "./components/ChatPanel.jsx";
-import Header from "./components/Header.jsx";
-import RulesCard from "./components/RulesCard.jsx";
+import ActivityCard, { type ActivityEntry } from "./components/ActivityCard.js";
+import BalanceCard from "./components/BalanceCard.js";
+import ChatPanel from "./components/ChatPanel.js";
+import Header from "./components/Header.js";
+import RulesCard from "./components/RulesCard.js";
 import { useBalance } from "./hooks/useBalance.js";
 import { useChat } from "./hooks/useChat.js";
 
@@ -14,7 +14,7 @@ export default function App() {
   const [showMore, setShowMore] = useState(false); // phone layout only
 
   // The activity list is derived from the conversation: newest first.
-  const activity = useMemo(
+  const activity = useMemo<ActivityEntry[]>(
     () =>
       chat.items
         .flatMap((item) =>

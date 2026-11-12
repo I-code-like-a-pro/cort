@@ -1,18 +1,20 @@
-import { createContext, useCallback, useContext, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
 
-const ToastContext = createContext(() => {});
+type ShowToast = (text: string) => void;
+
+const ToastContext = createContext<ShowToast>(() => {});
 
 export const useToast = () => useContext(ToastContext);
 
-export function ToastProvider({ children }) {
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [message, setMessage] = useState("");
   const [visible, setVisible] = useState(false);
-  const timer = useRef(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const show = useCallback((text) => {
+  const show = useCallback<ShowToast>((text) => {
     setMessage(text);
     setVisible(true);
-    clearTimeout(timer.current);
+    if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => setVisible(false), 1800);
   }, []);
 

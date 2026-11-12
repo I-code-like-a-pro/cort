@@ -1,13 +1,14 @@
 import { fmt, isTxHash } from "../format.js";
-import { useToast } from "../toast.jsx";
+import { useToast } from "../toast.js";
+import type { PayVendorEvent } from "../api.js";
 
 // One payment attempt, shown inside the agent's reply.
-export default function TxnCard({ ev }) {
+export default function TxnCard({ ev }: { ev: PayVendorEvent }) {
   const toast = useToast();
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(ev.hash);
+      await navigator.clipboard.writeText(ev.hash ?? "");
       toast("Transaction ID copied");
     } catch {
       toast("Could not copy");

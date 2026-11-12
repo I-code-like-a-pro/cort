@@ -1,7 +1,17 @@
 import { fmt, timeOf } from "../format.js";
-import { RefreshIcon } from "./Icons.jsx";
+import { RefreshIcon } from "./Icons.js";
+import type { BalanceStatus } from "../hooks/useBalance.js";
 
-export default function BalanceCard({ xlm, status, updatedAt, delta, refreshing, onRefresh }) {
+interface BalanceCardProps {
+  xlm: number | null;
+  status: BalanceStatus;
+  updatedAt: Date | null;
+  delta: number | null;
+  refreshing: boolean;
+  onRefresh: () => void;
+}
+
+export default function BalanceCard({ xlm, status, updatedAt, delta, refreshing, onRefresh }: BalanceCardProps) {
   let amount;
   if (xlm !== null) {
     amount = (

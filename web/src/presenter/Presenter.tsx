@@ -1,19 +1,21 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { DEFAULT_PLAN, SLIDES } from "./slides.jsx";
+import { DEFAULT_PLAN, SLIDES } from "./slides.js";
 import { plannedSeconds, usePilot } from "./usePilot.js";
+import type { Plan, Pilot } from "./usePilot.js";
 
-function mmss(totalSeconds) {
+function mmss(totalSeconds: number): string {
   const s = Math.max(0, Math.round(totalSeconds));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
 // Draws the 1920 x 1080 slide and scales it to fit whatever screen it is on.
-function Stage({ children }) {
-  const ref = useRef(null);
+function Stage({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
   useLayoutEffect(() => {
     const el = ref.current;
+    if (!el) return;
     const fit = () => setScale(Math.min(el.clientWidth / 1920, el.clientHeight / 1080));
     fit();
     const observer = new ResizeObserver(fit);
@@ -30,14 +32,14 @@ function Stage({ children }) {
   );
 }
 
-function PlanEditor({ pilot, onClose }) {
+function PlanEditor({ pilot, onClose }: { pilot: Pilot; onClose: () => void }) {
   const { plan, updatePlan, resetPlan } = pilot;
 
-  function setDuration(i, value) {
+  function setDuration(i: number, value: string) {
     const n = Math.max(1, Math.min(600, Number(value) || 1));
     updatePlan({ ...plan, durations: plan.durations.map((d, k) => (k === i ? n : d)) });
   }
-  function setHold(i, value) {
+  function setHold(i: number, value: boolean) {
     updatePlan({ ...plan, holds: plan.holds.map((h, k) => (k === i ? value : h)) });
   }
 
@@ -112,7 +114,7 @@ export default function Presenter() {
   latest.current = pilot;
 
   useEffect(() => {
-    function onKey(e) {
+    function onKey(e: KeyboardEvent) {
       const tag = e.target instanceof HTMLElement ? e.target.tagName : "";
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;

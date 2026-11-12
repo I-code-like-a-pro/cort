@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchBalance } from "../api.js";
 
+export type BalanceStatus = "loading" | "live" | "down";
+
 // Reads the wallet balance from the server and tracks how it changed.
 export function useBalance() {
-  const [xlm, setXlm] = useState(null);
-  const [status, setStatus] = useState("loading"); // "loading" | "live" | "down"
-  const [updatedAt, setUpdatedAt] = useState(null);
-  const [delta, setDelta] = useState(null);
+  const [xlm, setXlm] = useState<number | null>(null);
+  const [status, setStatus] = useState<BalanceStatus>("loading");
+  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
+  const [delta, setDelta] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const last = useRef(null);
-  const deltaTimer = useRef(null);
+  const last = useRef<number | null>(null);
+  const deltaTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inFlight = useRef(false);
 
   const refresh = useCallback(async () => {
@@ -26,7 +28,7 @@ export function useBalance() {
       setUpdatedAt(new Date());
       if (previous !== null && Math.abs(value - previous) > 1e-9) {
         setDelta(value - previous);
-        clearTimeout(deltaTimer.current);
+        if (deltaTimer.current) clearTimeout(deltaTimer.current);
         deltaTimer.current = setTimeout(() => setDelta(null), 6000);
       }
     } catch {
@@ -42,7 +44,7 @@ export function useBalance() {
     window.addEventListener("focus", refresh);
     return () => {
       window.removeEventListener("focus", refresh);
-      clearTimeout(deltaTimer.current);
+      if (deltaTimer.current) clearTimeout(deltaTimer.current);
     };
   }, [refresh]);
 

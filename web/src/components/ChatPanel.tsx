@@ -1,7 +1,8 @@
-import Composer from "./Composer.jsx";
-import MessageList from "./MessageList.jsx";
+import Composer from "./Composer.js";
+import MessageList from "./MessageList.js";
+import type { Chat } from "../hooks/useChat.js";
 
-export default function ChatPanel({ chat, onOpenMore }) {
+export default function ChatPanel({ chat, onOpenMore }: { chat: Chat; onOpenMore: () => void }) {
   return (
     <main className="chat card">
       <div className="chat-head">

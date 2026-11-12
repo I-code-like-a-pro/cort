@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import {
   ArrowIcon,
   BoltIcon,
@@ -6,12 +7,25 @@ import {
   KeyIcon,
   LockIcon,
   PulseIcon,
-} from "./icons.jsx";
+} from "./icons.js";
+import type { Plan } from "./usePilot.js";
 
 // The 11 slides of the Cort pitch. Each is drawn on a 1920 x 1080 canvas;
-// Presenter.jsx scales the canvas to fit the screen.
+// Presenter.tsx scales the canvas to fit the screen.
 
-function Frame({ tone, eyebrow, title, n, children }) {
+function Frame({
+  tone,
+  eyebrow,
+  title,
+  n,
+  children,
+}: {
+  tone: "light" | "dark";
+  eyebrow: string;
+  title: string;
+  n: number;
+  children: React.ReactNode;
+}) {
   return (
     <section className={"slide " + tone}>
       <div className="head">
@@ -27,7 +41,15 @@ function Frame({ tone, eyebrow, title, n, children }) {
   );
 }
 
-function Card({ icon, title, children }) {
+function Card({
+  icon,
+  title,
+  children,
+}: {
+  icon?: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="card">
       {icon}
@@ -249,7 +271,7 @@ function Stellar() {
 }
 
 function Roadmap() {
-  const items = [
+  const items: [string, string][] = [
     ["Multi-signature owner", "Two or more approvers to change any rule, so one stolen key is not enough."],
     ["Delay on new payees", "A new address only becomes active after a waiting period, so there is time to notice and cancel."],
     ["Daily spending cap", "A limit over time as well as per payment, so many small payments cannot drain it."],
@@ -295,7 +317,13 @@ function Close() {
   );
 }
 
-export const SLIDES = [
+export interface Slide {
+  id: string;
+  name: string;
+  view: ComponentType;
+}
+
+export const SLIDES: Slide[] = [
   { id: "cover", name: "Cover", view: Cover },
   { id: "problem-agents", name: "Agents need limits", view: ProblemAgents },
   { id: "problem-intrusion", name: "Taken-over systems", view: ProblemIntrusion },
@@ -311,7 +339,7 @@ export const SLIDES = [
 
 // Starting timings, in seconds, until you rehearse. The demo slide holds:
 // it waits for you, because a live demo never takes the same time twice.
-export const DEFAULT_PLAN = {
+export const DEFAULT_PLAN: Plan = {
   durations: [8, 12, 12, 10, 12, 12, 40, 12, 8, 8, 10],
   holds: [false, false, false, false, false, false, true, false, false, false, false],
 };

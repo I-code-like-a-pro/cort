@@ -1,8 +1,8 @@
 const base = {
   fill: "none",
   stroke: "currentColor",
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
   "aria-hidden": true,
 };
 
