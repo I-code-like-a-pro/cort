@@ -105,6 +105,15 @@ function ProblemIntrusion() {
         <span className="arrow"><ArrowIcon /></span>
         <Card title="Funds leave">Money goes to an address the attacker controls, often in crypto.</Card>
       </div>
+      <p className="note" style={{ fontSize: 24, lineHeight: 1.35, width: 1664 }}>
+        Huntress saw RMM-tool abuse (AnyDesk, ScreenConnect and similar) in about <b>1 in 4</b> incidents its
+        analysts investigated in 2025, up from 1 in 14 in 2024 — a 277% jump, because the traffic looks like normal
+        IT work. CISA, NSA and MS-ISAC have separately warned that criminals abuse these same tools to reach
+        victims’ accounts.{" "}
+        <span style={{ fontSize: 18, color: "#8a96aa" }}>
+          Sources: Huntress 2026 Cyber Threat Report · CISA/NSA/MS-ISAC Advisory AA23-025A (Jan 2023).
+        </span>
+      </p>
       <div className="mock">
         <p className="mock-label">Illustrative example · not an actual case</p>
         <div className="mock-chat">
@@ -149,6 +158,11 @@ function Idea() {
           Holds the funds, checks every request, and pays or refuses on-chain.
         </Card>
       </div>
+      <p className="note">
+        Who sets this up: teams giving an AI agent real purchasing or treasury authority on Stellar, and MSPs and
+        IT service companies who let automation initiate client payments — the same companies that are frequent
+        targets of the RMM abuse on the previous slide.
+      </p>
     </Frame>
   );
 }
@@ -247,6 +261,12 @@ function Limits() {
           </ul>
         </div>
       </div>
+      <p className="note">
+        This split is deliberate: CISA and Huntress both note that RMM abuse is hard to catch because the traffic
+        looks like ordinary IT work. Cort does not watch for that — it is a payment-side guardrail, not an
+        intrusion detector, so it still caps what a compromised signer can pay out even when the break-in itself
+        goes unnoticed.
+      </p>
     </Frame>
   );
 }
